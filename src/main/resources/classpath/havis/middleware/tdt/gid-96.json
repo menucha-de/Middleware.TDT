@@ -1,0 +1,215 @@
+{
+  "scheme" : [ {
+    "level" : [ {
+      "option" : [ {
+        "field" : [ {
+          "seq" : 1,
+          "name" : "generalmanager",
+          "bitLength" : 28,
+          "characterSet" : "[01]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : "LEFT",
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "268435455",
+          "length" : null
+        }, {
+          "seq" : 2,
+          "name" : "objectclass",
+          "bitLength" : 24,
+          "characterSet" : "[01]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : "LEFT",
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "16777215",
+          "length" : null
+        }, {
+          "seq" : 3,
+          "name" : "serial",
+          "bitLength" : 36,
+          "characterSet" : "[01]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : "LEFT",
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "68719476735",
+          "length" : null
+        } ],
+        "optionKey" : "1",
+        "pattern" : "00110101([01]{28})([01]{24})([01]{36})",
+        "grammar" : "'00110101' generalmanager objectclass serial"
+      } ],
+      "rule" : [ ],
+      "type" : "BINARY",
+      "prefixMatch" : "00110101",
+      "requiredParsingParameters" : null,
+      "requiredFormattingParameters" : "taglength"
+    }, {
+      "option" : [ {
+        "field" : [ {
+          "seq" : 1,
+          "name" : "generalmanager",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "268435455",
+          "length" : null
+        }, {
+          "seq" : 2,
+          "name" : "objectclass",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "16777215",
+          "length" : null
+        }, {
+          "seq" : 3,
+          "name" : "serial",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "68719476735",
+          "length" : null
+        } ],
+        "optionKey" : "1",
+        "pattern" : "urn:epc:tag:gid-96:([0-9]{1,9})\\.([0-9]{1,8})\\.([0-9]{1,11})",
+        "grammar" : "'urn:epc:tag:gid-96:' generalmanager '.' objectclass '.' serial"
+      } ],
+      "rule" : [ ],
+      "type" : "TAG_ENCODING",
+      "prefixMatch" : "urn:epc:tag:gid-96",
+      "requiredParsingParameters" : null,
+      "requiredFormattingParameters" : "taglength"
+    }, {
+      "option" : [ {
+        "field" : [ {
+          "seq" : 1,
+          "name" : "generalmanager",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "268435455",
+          "length" : null
+        }, {
+          "seq" : 2,
+          "name" : "objectclass",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "16777215",
+          "length" : null
+        }, {
+          "seq" : 3,
+          "name" : "serial",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "68719476735",
+          "length" : null
+        } ],
+        "optionKey" : "1",
+        "pattern" : "urn:epc:id:gid:([0-9]{1,9})\\.([0-9]{1,8})\\.([0-9]{1,11})",
+        "grammar" : "'urn:epc:id:gid:' generalmanager '.' objectclass '.' serial"
+      } ],
+      "rule" : [ ],
+      "type" : "PURE_IDENTITY",
+      "prefixMatch" : "urn:epc:id:gid",
+      "requiredParsingParameters" : null,
+      "requiredFormattingParameters" : null
+    }, {
+      "option" : [ {
+        "field" : [ {
+          "seq" : 1,
+          "name" : "generalmanager",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "268435455",
+          "length" : null
+        }, {
+          "seq" : 2,
+          "name" : "objectclass",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "16777215",
+          "length" : null
+        }, {
+          "seq" : 3,
+          "name" : "serial",
+          "bitLength" : null,
+          "characterSet" : "[0-9]*",
+          "compaction" : null,
+          "compression" : null,
+          "padChar" : null,
+          "padDir" : null,
+          "bitPadDir" : null,
+          "decimalMinimum" : "0",
+          "decimalMaximum" : "68719476735",
+          "length" : null
+        } ],
+        "optionKey" : "1",
+        "pattern" : "generalmanager=([0-9]{1,9});objectclass=([0-9]{1,8});serial=([0-9]{1,11})",
+        "grammar" : "'generalmanager=' generalmanager ';objectclass=' objectclass ';serial=' serial"
+      } ],
+      "rule" : [ ],
+      "type" : "LEGACY",
+      "prefixMatch" : "generalmanager=",
+      "requiredParsingParameters" : null,
+      "requiredFormattingParameters" : null
+    } ],
+    "name" : "GID-96",
+    "optionKey" : "1",
+    "tagLength" : 96
+  } ],
+  "version" : "1.4",
+  "date" : null,
+  "epcTDSVersion" : "1.4"
+}

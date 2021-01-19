@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ivy-module version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+	<info organisation="havis.middleware" module="tdt" default="true" />
+
+	<configurations>
+		<conf name="default" />
+		<conf name="module" />
+	</configurations>
+
+	<dependencies>
+		<dependency org="javax/xml/bind" name="jaxb-api" rev="${jaxb.version}" conf="module" />
+		<dependency org="com/sun/xml/bind" name="jaxb-impl" rev="${jaxb.version}" conf="default" />
+		<dependency org="com/sun/xml/bind" name="jaxb-xjc" rev="${jaxb.version}" conf="default" />
+		<dependency org="com/fasterxml/jackson/core" name="jackson-core" rev="${jackson.version}" conf="module" />
+		<dependency org="com/fasterxml/jackson/core" name="jackson-annotations" rev="${jackson.version}" conf="module" />
+		<dependency org="com/fasterxml/jackson/core" name="jackson-databind" rev="${jackson.version}" conf="default,module" />
+		<dependency org="com/google/gwt" name="gwt-user" rev="${gwt.version}" conf="default" />
+		<dependency org="org/fusesource/restygwt" name="restygwt" rev="${restygwt.version}" conf="default" />
+		<dependency org="org/jmockit" name="jmockit" rev="${jmockit.version}" conf="default" />
+		<!--<dependency org="org/jmockit" name="jmockit-coverage" rev="${jmockit.version}" conf="default" />-->
+		<dependency org="junit" name="junit" rev="${junit.version}" conf="default" />
+		<!--
+		<conflict org="javax/validation" module="validation-api" rev="1.0.0.GA" />
+		-->
+	</dependencies>
+
+</ivy-module>

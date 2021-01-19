@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<project name="havis.middleware.tdt" default="publish" xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+	<property file="${basedir}/build.properties" />
+	<property name="basename" value="${ant.project.name}" />
+	<property name="build.dir" location="${basedir}/target" />
+	<property name="build.dir.classes" location="${build.dir}/classes" />
+	<property name="build.dir.jaxb" value="${build.dir}/jaxb" />
+	<property name="build.dir.jaxb.classes" value="${build.dir.jaxb}/classes" />
+	<property name="build.dir.jaxb.src" value="${build.dir.jaxb}/src" />
+	<property name="build.dir.test" location="${build.dir}/test" />
+	<property name="build.dir.test.classes" location="${build.dir.test}/classes" />
+	<property name="doc.dir" location="${build.dir}/doc" />
+	<property name="lib.dir" location="${basedir}/lib" />
+	<property name="resources.dir" location="${basedir}/src/main/resources" />
+	<property name="resources.dir.classpath" location="${resources.dir}/classpath" />
+	<property name="resources.test.dir" location="${basedir}/src/test/resources" />
+	<property name="resources.test.dir.classpath" location="${resources.test.dir}/classpath" />
+	<property name="resources.dir.xsd" location="${resources.dir}/xsd" />
+	<property name="src.main.dir" location="${basedir}/src/main/java" />
+	<property name="src.test.dir" location="${basedir}/src/test/java" />
+
+	<property name="openjdk-9" location="/usr/lib/jvm/java-9-openjdk-amd64" />
+	<property name="openjdk-11" location="/usr/lib/jvm/java-11-openjdk-amd64"/>
+	<property name="javac.version" value="8" />
+
+	<property file="${resources.dir}/build.properties" />
+	<property file="${resources.dir}/MANIFEST.MF" prefix="manifest" />
+
+	<path id="build.classpath">
+		<fileset dir="${lib.dir}" />
+	</path>
+
+	<filterset id="manifest" filtersfile="${resources.dir}/MANIFEST.MF"/>
+
+	<macrodef name="module-info">
+			<sequential>
+				<local name="module-info.present" />
+				<available file="${resources.dir}/module-info.java" property="module-info.present" />
+				<sequential if:set="module-info.present">
+					<local name="module-info.openjdk.path" />
+					<local name="module-info.openjdk.present" />
+					<local name="module-info.openjdk-9.present" />
+					<local name="module-info.openjdk-11.present" />
+					<available file="${openjdk-9}" type="dir" property="module-info.openjdk-9.present" />
+					<available file="${openjdk-11}" type="dir" property="module-info.openjdk-11.present" />
+					<condition property="module-info.openjdk.present">
+						<or>
+							<isset property="module-info.openjdk-9.present" />
+							<isset property="module-info.openjdk-11.present" />
+						</or>
+					</condition>
+					<condition property="module-info.openjdk.path" value="${openjdk-9}">
+						<isset property="module-info.openjdk-9.present" />
+					</condition>
+					<condition property="module-info.openjdk.path" value="${openjdk-11}">
+						<isset property="module-info.openjdk-11.present" />
+					</condition>
+					<sequential if:set="module-info.openjdk.present">
+						<ivy:retrieve pattern="${build.dir}/modules/[artifact].[ext]" conf="module" />
+						<exec executable="${module-info.openjdk.path}/bin/javac" failonerror="true">
+							<arg value="--release" />
+							<arg value="9" />
+							<arg value="-d" />
+							<arg value="${build.dir.classes}" />
+							<arg value="-p" />
+							<arg value="${build.dir}/modules" />
+							<arg value="${resources.dir}/module-info.java" />
+						</exec>
+					</sequential>
+					<sequential unless:set="module-info.openjdk.present">
+						<echo message="Missing openjdk-11 or 9" level="warning"/>
+					</sequential>
+				</sequential>
+			</sequential>
+		</macrodef>
+
+	<!-- Checks if the build.properties file exists 
+         and prints an error message if the file does not exist -->
+	<target name="check.build.properties">
+		<condition property="ivy.resolver" else="local">
+			<isset property="ivy.resolver" />
+		</condition>
+		<fail message="Missing property 'api.url'. Does 'build.properties' file exists?" unless="api.url" />
+		<fail message="Missing property 'ivy.url'. Does 'build.properties' file exists?" unless="ivy.url" />
+	</target>
+
+	<target name="clean-cache" description="Cleans ivy cache">
+		<ivy:cleancache />
+	</target>
+
+	<target name="clean" depends="clean-cache" description="Cleans the project">
+		<delete dir="${build.dir}" includeemptydirs="true" />
+		<delete dir="${lib.dir}" includeemptydirs="true" />
+	</target>
+
+	<target name="clean-all" depends="clean, clean-cache" description="Cleans the project and ivy cache" />
+
+	<target name="retrieve" depends="check.build.properties" description="">
+		<ivy:retrieve log="quiet" />
+	</target>
+
+	<macrodef name="xjc">
+		<attribute name="name" />
+		<attribute name="package" />
+		<attribute name="catalog" default="" />
+		<element name="bindings" optional="true" implicit="true" />
+		<sequential>
+			<taskdef name="xjc2" classname="com.sun.tools.xjc.XJC2Task" classpathref="build.classpath" />
+			<xjc2 schema="${resources.dir}/xsd/@{name}.xsd" destdir="${build.dir}/jaxb/src" package="@{package}" extension="true">
+				<arg value="-npa" />
+				<arg value="-verbose" />
+				<bindings />
+			</xjc2>
+		</sequential>
+	</macrodef>
+
+	<target name="jaxb" depends="retrieve">
+		<mkdir dir="${build.dir.jaxb.src}" />
+		<xjc name="EpcTagDataTranslation" package="havis.middleware.tdt">
+			<binding dir="${resources.dir}" includes="binding/EpcTagDataTranslation.xml" />
+		</xjc>
+	</target>
+
+	<!-- Compiles the java source files -->
+	<target name="compile" depends="jaxb">
+		<mkdir dir="${build.dir.classes}" />
+		<javac destdir="${build.dir.classes}" release="${javac.version}" debug="${javac.debug}" includeantruntime="false">
+			<src path="${src.main.dir}" />
+			<src path="${build.dir}/jaxb/src" />
+			<classpath>
+				<pathelement location="${build.dir.classes}" />
+				<path refid="build.classpath" />
+			</classpath>
+			<compilerarg value="-Xlint:unchecked" />
+		</javac>
+	</target>
+
+	<target name="prepare" depends="compile" unless="${skip.test}">
+		<mkdir dir="${build.dir.test.classes}" />
+
+		<javac srcdir="${src.test.dir}" destdir="${build.dir.test.classes}" release="${javac.version}" debug="${javac.debug}" includeantruntime="false">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement location="${build.dir.classes}" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="test" depends="prepare" unless="${skip.test}">
+		<junit printsummary="true" fork="yes" dir="${build.dir.test}" haltonerror="yes" haltonfailure="yes" showoutput="true">
+			<jvmarg value="-Djmockit-coverage-output=html" />
+			<jvmarg value="-Djmockit-coverage-outputDir=${build.dir.test}/coverage-report" />
+			<jvmarg value="-Djmockit-coverage-srcDirs=${src.main.dir}" />
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement location="${build.dir.classes}" />
+				<pathelement location="${build.dir.test.classes}" />
+				<pathelement location="${resources.dir.classpath}" />
+				<pathelement location="${resources.test.dir.classpath}" />
+			</classpath>
+			<formatter type="plain" />
+			<test name="havis.middleware.tdt.TestSuite" todir="${build.dir.test}" />
+		</junit>
+	</target>
+
+	<target name="jar" depends="compile" description="Creates a JAR of the implemented and generated classes">
+		<module-info />
+		<!-- create JAR -->
+		<jar jarfile="${build.dir}/${basename}.jar" manifest="${resources.dir}/MANIFEST.MF">
+			<fileset dir="${build.dir.classes}" includes="havis/middleware/*/**" />
+			<fileset dir="${resources.dir.classpath}" />
+		</jar>
+	</target>
+
+	<target name="jar-src" depends="jaxb" description="Creates a sources JAR of the implemented and generated classes">
+		<!-- create sources JAR -->
+		<jar jarfile="${build.dir}/${basename}-sources.jar">
+			<fileset dir="${src.main.dir}" />
+			<fileset dir="${build.dir.jaxb.src}" />
+		</jar>
+	</target>
+
+	<target name="jar-doc" depends="jaxb" description="Creates a javadoc JAR of the implemented and generated classes">
+		<!-- create javadoc JAR -->
+		<javadoc destdir="${doc.dir}" author="true" version="true" use="true" windowtitle="${javadoc.windowtitle}" doctitle="${javadoc.doctitle}" bottom="${javadoc.buttom}">
+			<packageset dir="${src.main.dir}" defaultexcludes="yes" />
+			<packageset dir="${build.dir}/jaxb/src" />
+			<classpath>
+				<pathelement location="${src.main.dir}" />
+				<pathelement location="${build.dir}/jaxb/src" />
+				<path refid="build.classpath" />
+			</classpath>
+			<group title="Packages" packages="havis.middleware.*" />
+			<link offline="true" href="http://docs.oracle.com/javase/7/docs/api/" packagelistURL="${api.url}/javase/7/" />
+		</javadoc>
+		<jar jarfile="${build.dir}/${basename}-javadoc.jar" basedir="${doc.dir}" />
+	</target>
+
+	<target name="deb" depends="jar">
+		<copy file="${build.dir}/${basename}.jar" tofile="${build.dir}/deb/opt/havis-apps/bundle/50_${basename}.jar" />
+
+		<copy todir="${build.dir}/deb">
+			<fileset dir="${resources.dir}/deb/" includes="**/*.html DEBIAN/*" />
+			<filterset refid="manifest" />
+			<filterset>
+				<filter token="PACKAGE" value="${basename}" />
+				<filter token="ARCH" value="all" />
+				<filter token="PLATFORM" value="${platform}" />
+			</filterset>
+		</copy>
+
+		<copy todir="${build.dir}/deb">
+			<fileset dir="${resources.dir}/deb/" excludes="**/*.html DEBIAN/*" />
+		</copy>
+
+		<chmod perm="755" type="file">
+			<fileset dir="${build.dir}/deb/DEBIAN">
+				<include name="preinst" />
+				<include name="postinst" />
+				<include name="prerm" />
+				<include name="postrm"/>
+			</fileset>
+		</chmod>
+
+		<exec executable="fakeroot">
+			<arg value="dpkg" />
+			<arg value="-b" />
+			<arg value="${build.dir}/deb" />
+			<arg value="${build.dir}/${basename}.deb" />
+		</exec>
+	</target>
+
+	<target name="publish" depends="deb, jar-src, jar-doc" description="Publishes the JAR to the repository">
+		<ivy:resolve file="${resources.dir}/ivy.xml" />
+
+		<ivy:publish resolver="${ivy.resolver}" pubrevision="${manifest.Bundle-Version}" status="integration" overwrite="true">
+			<artifacts pattern="${build.dir}/[artifact].[ext]" />
+		</ivy:publish>
+	</target>
+
+</project>

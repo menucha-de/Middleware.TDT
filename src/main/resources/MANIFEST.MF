@@ -1,0 +1,14 @@
+Bundle-Name: Ha-VIS Middleware TDT
+Bundle-SymbolicName: havis.middleware.tdt
+Bundle-Version: 2.6.1
+Implementation-Version: 2.6
+Bundle-ManifestVersion: 2
+Bundle-Vendor: HARTING IT_SD
+Import-Package: 
+ javax.xml.bind,
+ javax.xml.transform,
+ javax.xml.transform.stream,
+ com.fasterxml.jackson.databind
+Export-Package: 
+ havis.middleware.misc,
+ havis.middleware.tdt

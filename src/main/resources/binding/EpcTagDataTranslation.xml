@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bindings version="2.1" xmlns="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:hi="urn:havis:tools:jaxb:interface" xmlns:hc="urn:havis:tools:jaxb:constructor" xmlns:ci="http://jaxb.dev.java.net/plugin/code-injector" extensionBindingPrefixes="hi hc ci">
+
+	<globalBindings generateElementProperty="false">
+		<javaType name="java.util.Date" xmlType="xs:dateTime" parseMethod="havis.middleware.tdt.DataTypeAdapter.parseDate" printMethod="havis.middleware.tdt.DataTypeAdapter.printDate" />
+	</globalBindings>
+
+	<bindings schemaLocation="../xsd/CompactionMethodList.xsd">
+		<bindings node="xs:simpleType[@name='CompactionMethodList']">
+			<typesafeEnumClass>
+				<typesafeEnumMember value="32-bit" name="_32BIT" />
+				<typesafeEnumMember value="16-bit" name="_16BIT" />
+				<typesafeEnumMember value="8-bit" name="_8BIT" />
+				<typesafeEnumMember value="7-bit" name="_7BIT" />
+				<typesafeEnumMember value="6-bit" name="_6BIT" />
+				<typesafeEnumMember value="5-bit" name="_5BIT" />
+			</typesafeEnumClass>
+		</bindings>
+
+	</bindings>
+</bindings>

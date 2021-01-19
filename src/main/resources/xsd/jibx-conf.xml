@@ -1,0 +1,4 @@
+<schema-set>  
+	<class-decorator class="org.jibx.schema.codegen.extend.SerializableDecorator"/>	
+	<schema-set package="havis.middleware.tdt" names="*.xsd" />
+</schema-set>
