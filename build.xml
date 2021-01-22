@@ -214,6 +214,8 @@
 			<fileset dir="${resources.dir}/deb/" excludes="**/*.html DEBIAN/*" />
 		</copy>
 
+		<mkdir dir="${build.dir}/deb/usr/share/doc" />
+
 		<chmod perm="755" type="file">
 			<fileset dir="${build.dir}/deb/DEBIAN">
 				<include name="preinst" />
